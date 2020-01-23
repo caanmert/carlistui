@@ -1,7 +1,7 @@
 import React from "react";
 import { Nav } from "react-bootstrap";
 
-const CarNavbar = props => {
+const CarNavbar = () => {
   return (
     <Nav className="navbar fixed-top navbar-dark bg-dark">
       <Nav.Item>

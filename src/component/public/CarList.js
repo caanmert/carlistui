@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import { CardDeck, Row, Button } from "react-bootstrap";
+import { CardDeck, Row } from "react-bootstrap";
 import "./css/CarList.css";
 import CarCard from "./CarCard.js";
 import axios from "axios";
-import { Link, Router, Route, Switch } from "react-router-dom";
-import UpdateForm from "../admin/UpdateForm";
 import FormUtil from "../admin/FormUtil";
+import AddCar from "../admin/AddCar";
 
 export class CarList extends Component {
   constructor(props) {
@@ -59,6 +58,7 @@ export class CarList extends Component {
     return (
       <CardDeck>
         <Row>
+          <AddCar />
           {this.state.cars.map(car => (
             <CarCard
               key={car.id}

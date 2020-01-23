@@ -11,13 +11,20 @@ export class FormUtil extends React.Component {
     };
   }
 
+  refreshList = () => {
+    fetch("http://localhost:8080/cars")
+      .then(response => response.json())
+      .then(cars => this.setState({ cars }));
+  };
+
   componentDidMount() {
     fetch("http://localhost:8080/brands")
       .then(response => response.json())
       .then(brands => this.setState({ brands }));
   }
 
-  fetchModelByBrand = brandId => {
+  fetchModelsByBrand = brandId => {
+    console.log("amcik seni" + brandId);
     fetch("http://localhost:8080/models/" + brandId)
       .then(response => response.json())
       .then(models => this.setState({ models }));
@@ -29,6 +36,19 @@ export class FormUtil extends React.Component {
     ));
   };
 
+  updateCar = car => {
+    console.log("updateCarthing" + this.props.car.id);
+    fetch("http://localhost:8080/cars/" + this.props.car.id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(car)
+    })
+      .then(() => this.refreshList())
+      .catch(error => console.log(error));
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -37,9 +57,11 @@ export class FormUtil extends React.Component {
         </Button>
         <UpdateForm
           brandDropdwn={this.state.brands}
-          modelDropdwn={this.fetchModelByBrand}
+          modelDropdwn={this.fetchModelsByBrand}
+          models={this.state.models}
           yearDropdwn={this.getYearList()}
           car={this.props.car}
+          updateCar={this.updateCar}
         />
       </React.Fragment>
     );

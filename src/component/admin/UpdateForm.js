@@ -1,7 +1,5 @@
 import React from "react";
-import { Modal, Button, Row, Col, Form, Dropdown } from "react-bootstrap";
-import ModalForm from "./ModalForm";
-import { booleanLiteralTypeAnnotation } from "@babel/types";
+import { Modal, Button, Form } from "react-bootstrap";
 
 export class UpdateForm extends React.Component {
   constructor(props) {
@@ -9,12 +7,15 @@ export class UpdateForm extends React.Component {
 
     this.state = {
       show: false,
-      carId: this.props.car.id,
-      brand: this.props.car.brand,
-      model: this.props.car.model,
-      year: this.props.car.year,
 
-      selectedBrandId: ""
+      selectedBrandId: "brandId",
+      selectedBrandname: "brandName",
+      selectedModel: "carModel",
+      selectedYear: "0000",
+
+      modelDrpDownDisabled: true,
+      yearDrpDownDisabled: true,
+      submitBtnDisabled: true
     };
   }
 
@@ -22,22 +23,49 @@ export class UpdateForm extends React.Component {
     this.setState({ show: true });
   };
   handleClose = () => {
-    this.setState({ show: false });
+    this.setState({
+      show: false,
+      modelDrpDownDisabled: true,
+      yearDrpDownDisabled: true
+    });
+    window.location.reload(true);
   };
 
   handleBrand = e => {
+    this.setState(
+      {
+        selectedBrandId: e.target.value,
+        selectedBrandname: e.target.selectedOptions[0].text,
+        modelDrpDownDisabled: false
+      },
+      () => {
+        this.props.modelDropdwn(this.state.selectedBrandId);
+      }
+    );
+  };
+  handleModel = e => {
     this.setState({
-      selectedBrandId: e.target.value
+      selectedModel: e.target.value,
+      yearDrpDownDisabled: false
     });
-    console.log(e.target.value);
   };
 
-  componentDidMount() {
-    /* fetch("http://localhost:8080/cars/" + this.props.carId)
-      .then(response => response.json())
-      .then(car => this.setState({ car }));
-    console.log("componentdidmount");*/
-  }
+  handleYear = e => {
+    this.setState({
+      selectedYear: e.target.selectedOptions[0].text,
+      submitBtnDisabled: false
+    });
+  };
+
+  handleSubmit = () => {
+    var car = {
+      brand: this.state.selectedBrandname,
+      model: this.state.selectedModel,
+      year: this.state.selectedYear
+    };
+    this.props.updateCar(car);
+    window.location.reload(true);
+  };
 
   render() {
     return (
@@ -54,7 +82,11 @@ export class UpdateForm extends React.Component {
           <Modal.Body>
             <Form onSubmit={this.handleSubmit}>
               <Form.Label>Brand</Form.Label>
-              <Form.Control as="select" onClick={this.handleBrand}>
+              <Form.Control
+                as="select"
+                disabled={false}
+                onChange={this.handleBrand}
+              >
                 {this.props.brandDropdwn.map(brand => (
                   <option key={brand.id} value={brand.id}>
                     {brand.brand}
@@ -63,17 +95,25 @@ export class UpdateForm extends React.Component {
               </Form.Control>
 
               <Form.Label>Model</Form.Label>
-              <Form.Control as="select" onClick={this.handleBrand}>
-                {console.log(this.props.modelDropdwn)}
-                {console.log(this.state.model)}
-                {/* {this.props.modelDropdwn.map(model => (
-                  <option key ={model.model} value={model.model} >{model.model}</option>
-                ))} */}
+              <Form.Control
+                as="select"
+                disabled={this.state.modelDrpDownDisabled}
+                onChange={this.handleModel}
+              >
+                {this.props.models.map(model => (
+                  <option key={model.model} value={model.model}>
+                    {model.model}
+                  </option>
+                ))}
               </Form.Control>
 
               <Form.Label>Year</Form.Label>
-              <Form.Control as="select">
-                <option>{this.state.year}</option>
+              <Form.Control
+                as="select"
+                disabled={this.state.yearDrpDownDisabled}
+                onChange={this.handleYear}
+              >
+                <option></option>
                 {this.props.yearDropdwn}
               </Form.Control>
             </Form>
@@ -82,8 +122,12 @@ export class UpdateForm extends React.Component {
             <Button variant="secondary" onClick={this.handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={this.handleClose}>
-              Save Changes
+            <Button
+              variant="primary"
+              disabled={this.state.submitBtnDisabled}
+              onClick={this.handleSubmit}
+            >
+              Update
             </Button>
           </Modal.Footer>
         </Modal>
