@@ -8,10 +8,10 @@ export class UpdateForm extends React.Component {
     this.state = {
       show: false,
 
-      selectedBrandId: "brandId",
-      selectedBrandname: "brandName",
-      selectedModel: "carModel",
-      selectedYear: "0000",
+      selectedBrandId: "",
+      selectedBrandname: "",
+      selectedModel: "",
+      selectedYear: "",
 
       modelDrpDownDisabled: true,
       yearDrpDownDisabled: true,
@@ -76,7 +76,7 @@ export class UpdateForm extends React.Component {
 
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Edit {this.props.car.brand}</Modal.Title>
+            <Modal.Title>Edit</Modal.Title>
           </Modal.Header>
 
           <Modal.Body>

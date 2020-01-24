@@ -12,7 +12,9 @@ export class CarList extends Component {
 
     this.state = {
       header: "",
-      cars: []
+      cars: [],
+      isLoggedIn: false,
+      jwtToken: sessionStorage.getItem("jwt")
     };
   }
 
@@ -50,22 +52,24 @@ export class CarList extends Component {
       });
   };
 
-  /*updateHandler = id => {
-    return <UpdateForm />;
-  };*/
-
   render() {
+    let formUtil;
+    let addCar;
+    if (this.state.jwtToken) {
+      formUtil = <FormUtil />;
+      addCar = <AddCar />;
+    }
     return (
       <CardDeck>
         <Row>
-          <AddCar />
+          {addCar}
           {this.state.cars.map(car => (
             <CarCard
               key={car.id}
               car={car}
               deleteBtn={() => this.deleteHandler(car.id)}
             >
-              <FormUtil car={car} />
+              {formUtil}
             </CarCard>
           ))}
         </Row>
