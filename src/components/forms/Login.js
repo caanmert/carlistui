@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Form, Button } from "react-bootstrap";
-import CarList from "../public/CarList";
 import { Redirect } from "react-router-dom";
 
 class Login extends Component {
@@ -10,7 +9,9 @@ class Login extends Component {
       username: "",
       password: "",
       isAuthenticated: false,
-      open: false
+      open: false,
+      failed: false,
+      jwtToken: sessionStorage.getItem("jwt")
     };
   }
 
@@ -33,24 +34,29 @@ class Login extends Component {
       body: JSON.stringify(user)
     })
       .then(res => {
+        this.setState({ failed: res });
         const jwtToken = res.headers.get("Authorization");
         if (jwtToken !== null) {
           sessionStorage.setItem("jwt", jwtToken);
           this.setState({ isAuthenticated: true });
         } else {
-          this.setState({ open: true });
+          this.setState({ open: true, failed: true });
         }
       })
       .catch(err => console.error(err));
+    console.log(this.state.failed);
   };
 
   render() {
-    if (this.state.isAuthenticated === true) {
+    if (this.state.isAuthenticated === true || this.state.jwtToken !== null) {
       return <Redirect to={{ pathname: "/" }} />;
     } else {
       return (
         <Form>
           <Form.Group controlId="formBasicEmail">
+            {this.state.failed === true && (
+              <p>Your login credentials are wrong, Try again.</p>
+            )}
             <Form.Label>Username</Form.Label>
             <Form.Control
               onSubmit={this.handleSubmit}
@@ -64,6 +70,7 @@ class Login extends Component {
             <Form.Label>Password</Form.Label>
             <Form.Control
               name="password"
+              type="password"
               onChange={this.handleChange}
               placeholder="Password"
             />

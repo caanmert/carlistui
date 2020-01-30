@@ -1,26 +1,28 @@
 import React, { Component } from "react";
 import "./App.css";
-import CarList from "./component/public/CarList";
+
+import CarNavbar from "./components/navbar/CarNavbar";
+import Login from "./components/forms/Login";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import CarList from "./components/carlist/CarList";
 import { Container } from "react-bootstrap";
-import CarNavbar from "./component/public/CarNavbar";
-import AddCar from "./component/admin/AddCar";
-import Login from "./component/admin/Login";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 class App extends Component {
   render() {
     return (
-      <Router>
-        <Switch>
-          <Route exact path="/">
-            <CarNavbar />
-            <CarList />
-          </Route>
-          <Route path="/login">
-            <Login />
-          </Route>
-        </Switch>
-      </Router>
+      <Container>
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <CarList />
+            </Route>
+            <Route path="/login">
+              <CarNavbar />
+              <Login />
+            </Route>
+          </Switch>
+        </Router>
+      </Container>
     );
   }
 }
